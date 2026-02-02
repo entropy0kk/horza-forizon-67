@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Forza Horizon HTML5</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;800&display=swap" rel="stylesheet">
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+            "cannon-es": "https://unpkg.com/cannon-es@0.20.0/dist/cannon-es.js"
+          }
+        }
+    </script>
+</head>
+
+<body>
+    <div id="app"></div>
+    <div id="ui">
+        <div class="hud-top">
+            <h1 style="margin: 0; font-size: 1.5rem; letter-spacing: 2px;">FORZA HORIZON HTML</h1>
+        </div>
+        <div class="hud-bottom">
+            <div class="speedometer">
+                <div class="speed-value" id="speed">0</div>
+                <div class="speed-unit">KM/H</div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
