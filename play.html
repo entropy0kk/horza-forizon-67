@@ -141,6 +141,115 @@
             text-shadow: 0 0 15px rgba(255, 0, 68, 0.6);
         }
 
+        /* Loading Screen */
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #050505;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s;
+        }
+
+        #loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #f04;
+            letter-spacing: 5px;
+            margin-bottom: 2rem;
+            text-shadow: 0 0 30px rgba(255, 0, 68, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .loader-bar-container {
+            width: 300px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loader-bar-fill {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 50%;
+            background: #f04;
+            box-shadow: 0 0 15px #f04;
+            animation: loading 2s infinite ease-in-out;
+        }
+
+        .loader-text {
+            margin-top: 1.5rem;
+            font-size: 0.7rem;
+            font-weight: 800;
+            letter-spacing: 3px;
+            color: rgba(255, 255, 255, 0.5);
+            text-transform: uppercase;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes loading {
+            0% {
+                left: -50%;
+                width: 30%;
+            }
+
+            50% {
+                left: 30%;
+                width: 40%;
+            }
+
+            100% {
+                left: 100%;
+                width: 30%;
+            }
+        }
+
+        .nitro-label-v2 {
+            position: absolute;
+            top: 30px;
+            font-size: 0.6rem;
+            font-weight: 800;
+            color: #0cf;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(0, 204, 255, 0.5);
+            opacity: 0.8;
+        }
+
         #instructions {
             position: absolute;
             top: 50%;
@@ -258,6 +367,15 @@
 </head>
 
 <body>
+    <div id="loader" class="hidden">
+        <div class="loader-content">
+            <div class="loader-logo">FORZA</div>
+            <div class="loader-bar-container">
+                <div class="loader-bar-fill"></div>
+            </div>
+            <div class="loader-text">WCZYTYWANIE FESTIWALU HORIZON...</div>
+        </div>
+    </div>
     <div id="app"></div>
     <div id="ui">
         <div id="instructions">
@@ -303,13 +421,13 @@
                 </svg>
             </div>
             <div id="drift-indicator">DRIFT</div>
-            <div class="nitro-label">NITRO</div>
             <div id="nitro-bar">
                 <div id="nitro-fill"></div>
             </div>
             <div class="speed-hud" id="speed-container">
                 <div class="speed-arc"></div>
                 <div class="nitro-arc"></div>
+                <div class="nitro-label-v2">NITRO</div>
                 <div class="speed-val" id="speed">0</div>
                 <div class="speed-unit-v2">KM/H</div>
                 <div class="gear-v2" id="gear">1</div>
@@ -338,20 +456,33 @@
 
         function startGame() {
             try {
-                console.log("Starting game...");
-                document.getElementById('instructions').style.display = 'none';
-                document.getElementById('hud').style.display = 'block';
-                if (!window.game) {
-                    console.error("Game object not found! Initializing now...");
-                    window.game = new Game();
-                }
-                window.game.audio.init();
-                window.game.spawnCar(selectedCarType, selectedColor);
-                gameStarted = true;
-                console.log("Game started successfully.");
+                // Show loader first
+                const loader = document.getElementById('loader');
+                if (loader) loader.classList.remove('hidden');
+
+                setTimeout(() => {
+                    console.log("Starting game...");
+                    document.getElementById('instructions').style.display = 'none';
+                    document.getElementById('hud').style.display = 'block';
+                    if (!window.game) {
+                        console.error("Game object not found! Initializing now...");
+                        window.game = new Game();
+                    }
+                    window.game.audio.init();
+                    window.game.spawnCar(selectedCarType, selectedColor);
+                    gameStarted = true;
+                    console.log("Game started successfully.");
+
+                    // Hide loader after game is ready
+                    setTimeout(() => {
+                        if (loader) loader.classList.add('hidden');
+                    }, 500);
+                }, 100); // Small delay to allow UI to render the loader
             } catch (err) {
                 console.error("Error starting game:", err);
                 alert("Wystąpił błąd podczas startu gry. Sprawdź konsolę.");
+                const loader = document.getElementById('loader');
+                if (loader) loader.classList.add('hidden');
             }
         }
 
